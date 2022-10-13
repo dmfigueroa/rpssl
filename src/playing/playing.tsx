@@ -42,7 +42,7 @@ const Playing = ({
     const result = resolveGame(playerChoice, cpuChoice);
     if (result === "win") {
       playerWins();
-    } else if (result === "lose") {
+    } else if (result === "loose") {
       cpuWins();
     }
     setResult(result);

@@ -11,5 +11,5 @@ const wins: Record<Options, Options[]> = {
 export function resolveGame(player: Options, cpu: Options) {
     if (player === cpu) return "draw";
     if (wins[player].includes(cpu)) return "win";
-    return "lose";
+    return "loose";
 }
