@@ -1,16 +1,13 @@
 import { useState } from "react";
 import Picker, { type Options } from "./picker/picker";
-import Playing from "./playing";
-import { resolveGame } from "./resolver";
-import Result from "./result";
+import Playing from "./playing/playing";
 
-type State = "choosing" | "playing" | "result";
+type State = "choosing" | "playing";
 const DEFAULT_OPTION: Options = "rock";
 
 const App = () => {
   const [playerScore, setPlayerScore] = useState(0);
   const [cpuScore, setCpuScore] = useState(0);
-  const [matchResult, setMatchResult] = useState("");
   const [state, setState] = useState<State>("choosing");
   const [playerChoice, setPlayerChoice] = useState<Options>(DEFAULT_OPTION);
 
@@ -27,31 +24,16 @@ const App = () => {
     setPlayerChoice(option);
   };
 
-  const chooseCpu = (option: Options) => {
-    setState("result");
-    chooseWinner(playerChoice, option);
-  };
-
-  const chooseWinner = (playerChoice: Options, cpuChoice: Options) => {
-    const result = resolveGame(playerChoice, cpuChoice);
-    if (result === "win") {
-      playerWins();
-    } else if (result === "lose") {
-      cpuWins();
-    }
-    setMatchResult(result);
-  };
-
   const renderState = (state: State) => {
     switch (state) {
       case "choosing":
         return <Picker choose={choosePlayer} />;
       case "playing":
-        return <Playing playerChoice={playerChoice} choose={chooseCpu} />;
-      case "result":
         return (
-          <Result
-            result={matchResult}
+          <Playing
+            playerChoice={playerChoice}
+            playerWins={playerWins}
+            cpuWins={cpuWins}
             continuePlaying={() => setState("choosing")}
           />
         );

@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
-import { Options } from "./picker/picker";
-import Option from "./picker/option";
-import icons from "./icons";
+import { Options } from "../picker/picker";
+import Option from "../picker/option";
+import icons from "../icons";
+import { resolveGame } from "../resolver";
+import Header from "./header";
+import ContinueButton from "./continue-button";
 
 const FIVE_SECONDS = 3000;
 const TIMER_INTERVAL = 100;
@@ -9,12 +12,21 @@ const DEFAULT_OPTION: Options = "rock"; // Shouldn't be repeated (also on App.ts
 
 interface PlayingProps {
   playerChoice: Options;
-  choose: (option: Options) => void;
+  playerWins: () => void;
+  cpuWins: () => void;
+  continuePlaying: () => void;
 }
 
-const Playing = ({ playerChoice, choose }: PlayingProps) => {
+const Playing = ({
+  playerChoice,
+  playerWins,
+  cpuWins,
+  continuePlaying,
+}: PlayingProps) => {
   const [timeLeft, setTimeLeft] = useState(FIVE_SECONDS);
   const [cpuChoice, setCpuChoice] = useState<Options>(DEFAULT_OPTION);
+  const [choosing, setChoosing] = useState(true);
+  const [result, setResult] = useState("draw");
 
   const chooseRandom = () => {
     const options = Object.values(Options);
@@ -26,9 +38,20 @@ const Playing = ({ playerChoice, choose }: PlayingProps) => {
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
   };
 
+  const chooseWinner = (playerChoice: Options, cpuChoice: Options) => {
+    const result = resolveGame(playerChoice, cpuChoice);
+    if (result === "win") {
+      playerWins();
+    } else if (result === "lose") {
+      cpuWins();
+    }
+    setResult(result);
+  };
+
   useEffect(() => {
     if (timeLeft === 0) {
-      choose(cpuChoice);
+      setChoosing(false);
+      chooseWinner(playerChoice, cpuChoice);
       return;
     }
 
@@ -43,8 +66,8 @@ const Playing = ({ playerChoice, choose }: PlayingProps) => {
   }, [timeLeft]);
 
   return (
-    <div>
-      <h1 className="text-center text-2xl font-bold">The CPU is choosing...</h1>
+    <div className="flex flex-col justify-center items-center">
+      <Header choosing={choosing} result={result} />
       <div className="flex justify-center items-center my-12">
         <div className="flex flex-col justify-center items-center">
           <span className="text-xs">You</span>
@@ -64,6 +87,7 @@ const Playing = ({ playerChoice, choose }: PlayingProps) => {
           />
         </div>
       </div>
+      {!choosing && <ContinueButton continuePlaying={continuePlaying} />}
     </div>
   );
 };
