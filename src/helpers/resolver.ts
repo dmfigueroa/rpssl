@@ -1,4 +1,5 @@
-import { Options } from "../picker/picker";
+import { Results } from "../playing/playing";
+import { Options } from "../stores/game";
 
 const wins: Record<Options, Options[]> = {
     rock: ["scissors", "lizard"],
@@ -8,8 +9,8 @@ const wins: Record<Options, Options[]> = {
     spock: ["scissors", "rock"],
 };
 
-export function resolveGame(player: Options, cpu: Options) {
+export function resolveGame(player: Options, cpu: Options): Results {
     if (player === cpu) return "draw";
     if (wins[player].includes(cpu)) return "win";
-    return "loose";
+    return "lose";
 }

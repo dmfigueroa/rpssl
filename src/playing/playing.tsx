@@ -6,7 +6,7 @@ import useGameStore, { chooseCpu, cpuWins, Options, playerWins } from "../stores
 import ContinueButton from "./continue-button";
 import Header from "./header";
 
-type Results = "win" | "loose" | "draw" | "choosing";
+export type Results = "win" | "lose" | "draw" | "choosing";
 
 const FIVE_SECONDS = 3000;
 const TIMER_INTERVAL = 100;
@@ -31,7 +31,7 @@ const Playing = () => {
     const result = resolveGame(playerChoice, cpuChoice);
     if (result === "win") {
       playerWins();
-    } else if (result === "loose") {
+    } else if (result === "lose") {
       cpuWins();
     }
     setResult(result);
