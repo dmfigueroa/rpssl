@@ -1,4 +1,4 @@
-import { Options } from "./picker/picker";
+import { Options } from "../picker/picker";
 
 const wins: Record<Options, Options[]> = {
     rock: ["scissors", "lizard"],

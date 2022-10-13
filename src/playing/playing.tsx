@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Options } from "../picker/picker";
 import Option from "../picker/option";
 import icons from "../icons";
-import { resolveGame } from "../resolver";
+import { resolveGame } from "../helpers/resolver";
 import Header from "./header";
 import ContinueButton from "./continue-button";
 
