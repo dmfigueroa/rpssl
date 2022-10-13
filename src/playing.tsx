@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Options } from "./picker";
-import Option from "./option";
-import icons from "../icons";
+import { Options } from "./picker/picker";
+import Option from "./picker/option";
+import icons from "./icons";
 
 const FIVE_SECONDS = 3000;
 const TIMER_INTERVAL = 100;
