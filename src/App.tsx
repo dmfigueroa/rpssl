@@ -1,28 +1,11 @@
-import { useState } from "react";
-import Picker, { type Options } from "./picker/picker";
+import Picker from "./picker/picker";
 import Playing from "./playing/playing";
-
-type State = "choosing" | "playing";
-const DEFAULT_OPTION: Options = "rock";
+import useGameStore from "./stores/game";
 
 const App = () => {
-  const [playerScore, setPlayerScore] = useState(0);
-  const [cpuScore, setCpuScore] = useState(0);
-  const [state, setState] = useState<State>("choosing");
-  const [playerChoice, setPlayerChoice] = useState<Options>(DEFAULT_OPTION);
-
-  const playerWins = () => {
-    setPlayerScore((prev) => prev + 1);
-  };
-
-  const cpuWins = () => {
-    setCpuScore((prev) => prev + 1);
-  };
-
-  const choosePlayer = (option: Options) => {
-    setState("playing");
-    setPlayerChoice(option);
-  };
+  const playerScore = useGameStore((state) => state.score.player);
+  const cpuScore = useGameStore((state) => state.score.cpu);
+  const state = useGameStore((state) => state.state);
 
   return (
     <>
@@ -30,16 +13,7 @@ const App = () => {
         <span>Player: {playerScore}</span>
         <span>CPU: {cpuScore}</span>
       </div>
-      {state === "choosing" ? (
-        <Picker choose={choosePlayer} />
-      ) : (
-        <Playing
-          playerChoice={playerChoice}
-          playerWins={playerWins}
-          cpuWins={cpuWins}
-          continuePlaying={() => setState("choosing")}
-        />
-      )}
+      {state === "choosing" ? <Picker /> : <Playing />}
     </>
   );
 };

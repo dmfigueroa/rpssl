@@ -1,11 +1,9 @@
-const ContinueButton = ({
-  continuePlaying,
-}: {
-  continuePlaying: () => void;
-}) => (
+import { setChoosingState } from "../stores/game";
+
+const ContinueButton = () => (
   <button
     className="my-3 mx-auto border-solid border-2 rounded p-2 px-4"
-    onClick={continuePlaying}
+    onClick={setChoosingState}
   >
     Play Again!
   </button>

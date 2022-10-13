@@ -1,37 +1,26 @@
 import { useEffect, useState } from "react";
-import { Options } from "../picker/picker";
-import Option from "../picker/option";
-import icons from "../icons";
 import { resolveGame } from "../helpers/resolver";
-import Header from "./header";
+import icons from "../icons";
+import Option from "../picker/option";
+import useGameStore, { chooseCpu, cpuWins, Options, playerWins } from "../stores/game";
 import ContinueButton from "./continue-button";
+import Header from "./header";
+
+type Results = "win" | "loose" | "draw" | "choosing";
 
 const FIVE_SECONDS = 3000;
 const TIMER_INTERVAL = 100;
-const DEFAULT_OPTION: Options = "rock"; // Shouldn't be repeated (also on App.tsx)
 
-interface PlayingProps {
-  playerChoice: Options;
-  playerWins: () => void;
-  cpuWins: () => void;
-  continuePlaying: () => void;
-}
-
-const Playing = ({
-  playerChoice,
-  playerWins,
-  cpuWins,
-  continuePlaying,
-}: PlayingProps) => {
+const Playing = () => {
   const [timeLeft, setTimeLeft] = useState(FIVE_SECONDS);
-  const [cpuChoice, setCpuChoice] = useState<Options>(DEFAULT_OPTION);
-  const [choosing, setChoosing] = useState(true);
-  const [result, setResult] = useState("draw");
+  const playerChoice = useGameStore((state) => state.choices.player);
+  const cpuChoice = useGameStore((state) => state.choices.cpu);
+  const [result, setResult] = useState<Results>("choosing");
 
   const chooseRandom = () => {
     const options = Object.values(Options);
     const randomIndex = Math.floor(Math.random() * options.length);
-    setCpuChoice(options[randomIndex]);
+    chooseCpu(options[randomIndex]);
   };
 
   const capitalize = (str: string) => {
@@ -50,7 +39,7 @@ const Playing = ({
 
   useEffect(() => {
     if (timeLeft === 0) {
-      setChoosing(false);
+      setResult("choosing");
       chooseWinner(playerChoice, cpuChoice);
       return;
     }
@@ -67,7 +56,7 @@ const Playing = ({
 
   return (
     <div className="flex flex-col justify-center items-center">
-      <Header choosing={choosing} result={result} />
+      <Header choosing={result === "choosing"} result={result} />
       <div className="flex justify-center items-center my-12">
         <div className="flex flex-col justify-center items-center">
           <span className="text-xs">You</span>
@@ -87,7 +76,7 @@ const Playing = ({
           />
         </div>
       </div>
-      {!choosing && <ContinueButton continuePlaying={continuePlaying} />}
+      {result !== 'choosing' && <ContinueButton />}
     </div>
   );
 };
